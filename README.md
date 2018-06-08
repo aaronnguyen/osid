@@ -22,7 +22,7 @@ The installer script will take you through a brand new Raspian system through ge
 
 On your RPi, open up a terminal window and type in the following:
 
-wget https://raw.githubusercontent.com/GeoDirk/osid-python3/master/install_osid.sh
+wget https://raw.githubusercontent.com/aaronnguyen/osid-python3/master/install_osid.sh
 
 Once that file has downloaded type in:
 
