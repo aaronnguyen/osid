@@ -32,9 +32,9 @@ which will change the file permissions to executable.  Follow that with:
 
 `sudo ./install_osid.sh`
 
-To start the process running.  Once the script has completed, you'll need to reboot your machine to finalize the settings.  After reboot, there will be a new icon on your Desktop called "".  Double clicking this will launch the GUI.
+To start the process running.  Once the script has completed, you'll need to reboot your machine to finalize the settings.  After reboot, there will be a new icon on your Desktop called "rPi SD Card Duplicator".  Double clicking this will launch the GUI.
 
-Samba has been installed on your machine and has opened up a file share that you can see from your network.  (Note: that you may have to fix the Workgroup setting in the file: /etc/samba/smb.conf).  Either copy the image that you want to burn using the file share or copy it in locally by putting it in the directory `/etc/osid/imaageroot`.
+Samba has been installed on your machine and has opened up a file share that you can see from your network.  (Note: that you may have to fix the Workgroup setting in the file: /etc/samba/smb.conf).  Either copy the image that you want to burn using the file share or copy it in locally by putting it in the directory `/etc/osid/imageroot`.
 
 
 ### Prerequisites
