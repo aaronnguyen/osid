@@ -76,8 +76,17 @@ sed -i 's/hostname:port/127.0.0.1:8080/g' run_app.sh
 
 sed -i 's/\/home\/pi\/Documents\/py-rpi-dupe/\/etc\/osid/g' osid.desktop.sample
 
+echo "===Make Desktop Icons==="
 mv osid.desktop.sample /home/pi/Desktop/osid.desktop
-
+echo "[Desktop Entry]
+Name=Root File Manager
+Comment=Opens up File Manager with Root Permissions
+Icon=/usr/share/pixmaps/gksu-root-terminal.png
+Exec=sudo pcmanfm
+Type=Application
+Encoding=UTF-8
+Terminal=false
+Categories=None;" > /home/pi/Desktop/RootFileMan.desktop
 
 echo "===Configuring Directory Permissions==="
 chown www-data:www-data /etc/osid/imgroot -R
