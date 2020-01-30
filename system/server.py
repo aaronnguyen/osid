@@ -12,7 +12,6 @@ import cherrypy
 class SDCardDupe(object):
     @cherrypy.expose
     def index(self):
-
         # get host configs from server.ini
         config_parse = configparser.ConfigParser()
         config_parse.sections()
@@ -23,11 +22,17 @@ class SDCardDupe(object):
         www_path = "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[:-1]) + "/www/"
         html_string = open(www_path + 'index.html', 'r').read()
         hostname_port = config_parse['DuplicatorSettings']['Host']+":"+config_parse['DuplicatorSettings']['SocketPort']
-        html_string = html_string.replace("replacewithhostnamehere",hostname_port)
+        html_string = html_string.replace("replacewithhostnamehere",'/')
 
         css_string = '<style>' + open(config_parse['DuplicatorSettings']['SkeletonLocation'], 'r').read() + '</style>'
         html_string = html_string.replace("<style></style>",css_string)
+        html_string = html_string.replace("$IMG_ROOT$", config_parse['DuplicatorSettings']['ImagePath'])
+        if 'BalenaAppId' in config_parse['DuplicatorSettings']:
+            balena_app_id = config_parse['DuplicatorSettings']['BalenaAppId']
+        else:
+            balena_app_id = "false"
 
+        html_string = html_string.replace("$BALENA_APP_ID$", balena_app_id)
         return html_string
 
 
@@ -43,7 +48,7 @@ class SDCardDupe(object):
         www_path = "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[:-1]) + "/www/"
         html_string = open(www_path + 'monitor.html', 'r').read()
         hostname_port = config_parse['DuplicatorSettings']['Host']+":"+config_parse['DuplicatorSettings']['SocketPort']
-        html_string = html_string.replace("replacewithhostnamehere",hostname_port)
+        html_string = html_string.replace("replacewithhostnamehere",'/')
 
         css_string = '<style>' + open(config_parse['DuplicatorSettings']['SkeletonLocation'], 'r').read() + '</style>'
         html_string = html_string.replace("<style></style>",css_string)
@@ -74,7 +79,7 @@ class SDCardDupe(object):
                 # assumptions made, there will be no collisions, dont have to pop element
                 # but to reduce the cost of loop, will pop element by creating new list
                 if dev_path in mounted_item:
-                    umount_disk_cmd = "sudo umount %s"%mounted_item
+                    umount_disk_cmd = "umount %s"%mounted_item
                     subprocess.call(umount_disk_cmd.split(" "))
                 else:
                     reduced_list.append(mounted_item)
@@ -97,11 +102,11 @@ class SDCardDupe(object):
         out.close()
 
         # Run dd command and output status into the progress.info file
-        dd_cmd = "sudo dcfldd bs=4M if=" + img_file
+        dd_cmd = "dcfldd bs=4M if=" + img_file
         dd_cmd += " of=" + " of=".join(devices)
-        dd_cmd += " sizeprobe=if statusinterval=1 2>&1 | sudo tee "
+        dd_cmd += " sizeprobe=if statusinterval=1 2>&1 | tee "
         dd_cmd += config_parse['DuplicatorSettings']['Logs'] + "/progress.info"
-        dd_cmd += " && echo \"osid_completed_task\" | sudo tee -a "
+        dd_cmd += " && echo \"osid_completed_task\" | tee -a "
         dd_cmd += config_parse['DuplicatorSettings']['Logs'] + "/progress.info"
 
         # Planned to run this in localhost only.
@@ -114,7 +119,7 @@ class SDCardDupe(object):
         subprocess.Popen(['sudo', 'bash', dd_cmd_file], close_fds=True)
 
         hostname_port = config_parse['DuplicatorSettings']['Host']+":"+config_parse['DuplicatorSettings']['SocketPort']
-        monitor_url = "http://" +  hostname_port + "/monitor";
+        monitor_url = "/monitor";
 
 
         html_string = "<html><head>"
@@ -140,7 +145,7 @@ class SDCardDupe(object):
         out.close()
 
         # pull data from progress.info file and feed back to call
-        cat_cmd = "sudo cat "+ progress_file
+        cat_cmd = "cat "+ progress_file
         cat_output = str(subprocess.check_output(cat_cmd, shell=True).decode("utf-8"))
         if "records in" in cat_output and "records out" in cat_output and "osid_completed_task" in cat_output:
             percentage = "100%"
@@ -163,7 +168,7 @@ class SDCardDupe(object):
         list_devices = []
 
         # Refresh partition to discover all available medias
-        refresh_disk_cmd = "sudo /sbin/partprobe"
+        refresh_disk_cmd = "/sbin/partprobe"
         subprocess.check_output(refresh_disk_cmd, shell=True)
 
         # command to get a list of devices on OS
@@ -235,10 +240,14 @@ if __name__ == '__main__':
             'log.access_file' : config_parse['DuplicatorSettings']['Logs']+"/access.log",
             'log.screen': False,
             'tools.sessions.on': True
+        },
+        '/favicon.ico':{
+            'tools.staticfile.on': True,
+            'tools.staticfile.filename': "/".join(os.path.dirname(os.path.realpath(__file__)).split("/")[:-1]) + "/www/favicon.ico"
         }
     }
 
     # create a daemon for cherrpy so it will create a thread when started
-    cherrypy.process.plugins.Daemonizer(cherrypy.engine).subscribe()
+    #cherrypy.process.plugins.Daemonizer(cherrypy.engine).subscribe()
 
     cherrypy.quickstart(SDCardDupe(), '/', conf)

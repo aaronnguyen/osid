@@ -3,7 +3,7 @@
 <meta charset="UTF-8">
 
 <head>
-    <title>rPi-Dupe</title>
+    <title>RPI-Duplicator</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="Description" content="Raspberry Pi SD Card Duplicator">
@@ -24,7 +24,7 @@
 
             var elem = document.getElementById("progress_bar");
             var width = 0;
-            var id = setInterval(frame, 100);
+            var id = setInterval(frame, 5000);
 
             function frame() {
                 if (width >= 100) {
@@ -33,7 +33,7 @@
 
                     var xmlhttp = new XMLHttpRequest();
                     // URL replacewithhostnamehere will be changed based on configuration file by CherryPy Server
-                    var url = "http://" + "replacewithhostnamehere" + "/getStatus";
+                    var url = "/getStatus";
 
                     // Call the api and get the status until complete.
                     xmlhttp.onreadystatechange = function() {
