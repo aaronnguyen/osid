@@ -105,4 +105,4 @@ system/server.ini
 .remote-sync.json
 system/osid.desktop
 system/run_app.sh
-system/balena.id
+#system/balena.id

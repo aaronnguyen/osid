@@ -1,6 +1,6 @@
 [DuplicatorSettings]
-ImagePath = /data
-Host = 0.0.0.0
+ImagePath = /etc/osid/imgroot
+Host = localhost
 SocketPort = 80
-Logs = /usr/src/app/logs
-SkeletonLocation = /usr/src/app/www/skeleton.min.css
+Logs = /var/osid
+SkeletonLocation = /path_to_folder/osid-python3/www/skeleton.min.css
