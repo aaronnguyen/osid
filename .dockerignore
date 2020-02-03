@@ -1,0 +1,5 @@
+LICENSE.md
+README.md
+/system/
+!/system/server.py
+!/system/balena.id

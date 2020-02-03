@@ -108,6 +108,10 @@ Then proceed to modify those files to match the system paths for the items in th
 * Just make sure the path for the run_app.sh script is defined properly.
 * if you use OSID on headless Raspberry, this file is useless.
 
+### Balena cloud deployment
+change `balenaAppId` variable in system/balena.id to your `<balena_app_id>`
+Deploy app to balena cloud
+
 ### Usage
 
 #### Accepted image file
