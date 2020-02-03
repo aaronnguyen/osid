@@ -20,15 +20,15 @@
     </style>
 
     <script>
-        function move() {
+        function startPolling() {
 
             var elem = document.getElementById("progress_bar");
             var width = 0;
-            var id = setInterval(frame, 5000);
+            var timer, completed_html = "";
 
-            function frame() {
+            function getStatus() {
                 if (width >= 100) {
-                    clearInterval(id);
+                    clearTimeout(timer);
                 } else {
 
                     var xmlhttp = new XMLHttpRequest();
@@ -37,16 +37,15 @@
 
                     // Call the api and get the status until complete.
                     xmlhttp.onreadystatechange = function() {
-                        if (this.readyState == 4 && this.status == 200) {
-
+                        if (this.readyState === 4 && this.status === 200) {
                             // Have to parse it twice to get a Json Object
                             var array = JSON.parse(JSON.parse(this.responseText))
 
                             width = parseInt(array.percentage);
                             elem.style.width = width + '%';
-                            elem.innerHTML = width * 1 + '%';
+                            elem.innerHTML = width + '%';
 
-                            if (width == 100) {
+                            if (width === 100) {
                                 completed_html = "Duplication Complete: " + array.img_name + "<br>"
                                 completed_html += "<a href=\"/\">Return to Start</a>"
                                 document.getElementById("StatusMessage").innerHTML = completed_html
@@ -54,15 +53,18 @@
                                 document.getElementById("StatusMessage").innerHTML = "Time Remaining: " + array.time_remaining
                             }
 
+                            //set timer for next request with 5s delay
+                            timer = setTimeout(getStatus, 5000)
                         }
                     };
+
                     xmlhttp.open("GET", url, true);
                     xmlhttp.send();
-
-
-
                 }
             }
+
+            //start getStatus immediately
+            getStatus()
         }
     </script>
 
@@ -90,7 +92,7 @@
                 </div>
             </div>
             <script type="text/javascript">
-            move();
+            startPolling();
             </script>
 
         </div>
